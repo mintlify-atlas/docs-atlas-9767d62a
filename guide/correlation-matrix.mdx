@@ -1,0 +1,48 @@
+---
+title: 'Generate and interpret the Pearson correlation matrix'
+description: 'How to produce the Pearson correlation matrix in Matriz de Indicadores, read coefficient values, and identify linear relationships between your indicators.'
+---
+
+The **Matriz** view lets you visualize indicator data and compute pairwise Pearson correlation coefficients between all registered indicators. The correlation matrix helps you identify which indicators move together, in opposite directions, or independently.
+
+<Note>
+To generate a meaningful correlation matrix you need at least two indicators, each with at least two shared non-null data points in the same months. If these conditions are not met, individual cells in the matrix display a dash (`-`) instead of a coefficient.
+</Note>
+
+## Generating the matrix
+
+<Steps>
+  <Step title="Open the Matriz view">
+    Navigate to the **Matriz** section from the main navigation. The top of the page shows a summary table of all registered indicators with their codes and names.
+  </Step>
+  <Step title="Click Matriz de correlación">
+    Click the **Matriz de correlación** button. The application calculates the Pearson r value for every pair of indicators and renders the results in a table below the button.
+  </Step>
+</Steps>
+
+## Reading the results
+
+The correlation matrix is a square table where both rows and columns are labeled with indicator codes. Each cell contains the Pearson r value for the pair formed by that row's indicator and that column's indicator.
+
+- The diagonal (where row and column share the same indicator) always shows `1.00`.
+- A dash (`-`) appears when there are fewer than two valid paired data points for that combination — for example, if one indicator has data only for months where the other has nulls.
+
+<Tip>
+Use these guidelines to interpret r values:
+
+- **r near 1** — strong positive relationship: both indicators tend to increase together.
+- **r near −1** — strong negative relationship: when one increases, the other tends to decrease.
+- **r near 0** — little or no linear relationship between the two indicators.
+
+Values above `0.7` or below `−0.7` are generally considered strong correlations in most performance analysis contexts.
+</Tip>
+
+## How the coefficient is calculated
+
+The application computes the standard Pearson product-moment correlation coefficient. For each pair of indicators, it collects the months where both have non-null numeric values, then applies the formula:
+
+```text
+r = Σ[(a − ā)(b − b̄)] / √[Σ(a − ā)² × Σ(b − b̄)²]
+```
+
+Where `a` and `b` are the paired value lists and `ā`, `b̄` are their respective means. If the denominator is zero (all values are identical), the result is shown as `-`.

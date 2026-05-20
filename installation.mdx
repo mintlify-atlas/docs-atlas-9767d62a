@@ -1,0 +1,81 @@
+---
+title: "Install Matriz de Indicadores and set up your environment"
+description: "Clone the repository, create a virtual environment, and install all Python dependencies to run Matriz de Indicadores on your machine."
+---
+
+Before you can run the app, you need to clone the repository and install its dependencies inside a Python virtual environment. The steps below cover the full setup on Windows using the standard `py` launcher.
+
+<Note>
+  Flet requires **Python 3.x**. Make sure you have Python 3 installed before proceeding. You can check your version by running `py --version` in a terminal.
+</Note>
+
+<Steps>
+  <Step title="Clone the repository">
+    Clone the project from GitHub to your local machine:
+
+    ```bash
+    git clone https://github.com/davi-huanuco/python-matriz-correlacion.git
+    cd python-matriz-correlacion
+    ```
+  </Step>
+
+  <Step title="Create a virtual environment">
+    Create a new virtual environment named `venv` inside the project directory:
+
+    ```bash
+    py -m venv venv
+    ```
+
+    This generates a `venv/` folder that will hold all the project's Python packages, isolated from your global Python installation.
+  </Step>
+
+  <Step title="Activate the virtual environment">
+    Activate the environment so that subsequent `pip` commands install packages into it:
+
+    ```bash
+    venv\Scripts\activate
+    ```
+
+    Your terminal prompt will change to show `(venv)` when the environment is active.
+  </Step>
+
+  <Step title="Install dependencies">
+    Install all required packages from `requirements.txt`:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+    This installs the following packages:
+
+    | Package | Version | Purpose |
+    |---|---|---|
+    | `flet` | 0.85.0 | Desktop GUI framework |
+    | `flet-desktop` | 0.85.0 | Flet native desktop target |
+    | `httpx` | 0.28.1 | HTTP client |
+    | `msgpack` | 1.1.2 | Binary serialization |
+    | `anyio` | 4.13.0 | Async I/O support |
+    | `oauthlib` | 3.3.1 | OAuth utilities |
+    | `repath` | 0.9.0 | URL path matching |
+    | `six` | 1.17.0 | Python 2/3 compatibility |
+    | `certifi`, `httpcore`, `h11`, `idna` | various | HTTP/TLS support |
+  </Step>
+
+  <Step title="Deactivate when done">
+    When you finish working, deactivate the virtual environment to return to your system Python:
+
+    ```bash
+    deactivate
+    ```
+  </Step>
+</Steps>
+
+<Tip>
+  If you add new packages during development, save them to `requirements.txt` so other contributors can reproduce your environment:
+
+  ```bash
+  pip freeze > requirements.txt
+  ```
+</Tip>
+
+You are now ready to launch the app. Continue to the [Quickstart](/quickstart) to run it for the first time.

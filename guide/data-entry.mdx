@@ -1,0 +1,39 @@
+---
+title: 'Enter and save monthly values for each indicator in Datos'
+description: 'Learn how to select an indicator, fill in numeric values per month, handle decimal separators, and save data in the Datos view of Matriz de Indicadores.'
+---
+
+The **Datos** view is where you record the numeric value of each indicator for every registered month. After saving, the values feed into the correlation matrix and benchmarking calculations.
+
+<Warning>
+You must register at least one month in **Meses** and at least one indicator in **Indicadores** before the **Datos** view allows data entry. If either list is empty, the view displays a message directing you to complete those steps first.
+</Warning>
+
+## Entering data
+
+<Steps>
+  <Step title="Open the Datos view">
+    Navigate to the **Datos** section from the main navigation.
+  </Step>
+  <Step title="Select an indicator">
+    Use the **Seleccionar indicador** dropdown to choose the indicator you want to fill in. The dropdown shows each indicator's code and name, for example `IND001 - Disponibilidad del servicio`.
+  </Step>
+  <Step title="Fill in the monthly fields">
+    A form appears with one text field per registered month. Enter the numeric value for each month. You can leave a field blank if no data is available for that period — blank fields are saved as null and display as `-` in the data table.
+  </Step>
+  <Step title="Click Guardar datos">
+    Click **Guardar datos** to persist the values. A confirmation message appears and the data table at the bottom of the page updates immediately.
+  </Step>
+</Steps>
+
+<Note>
+You can use either a period (`.`) or a comma (`,`) as the decimal separator. Both `90.5` and `90,5` are accepted and stored as the same value. The application converts commas to periods automatically before saving.
+</Note>
+
+## Validation
+
+If one or more fields contain text that cannot be interpreted as a number, the form is not saved. A red error message lists the names of the months with invalid values so you can correct them before trying again. Empty fields are always valid and are stored as null.
+
+## Data table
+
+Below the entry form, a read-only table shows all recorded values for every indicator. Rows represent indicators (identified by their code) and columns represent months. A dash (`-`) in a cell means no value has been entered for that indicator-month combination.

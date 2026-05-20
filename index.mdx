@@ -1,133 +1,62 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
-icon: 'star'
+title: "Matriz de Indicadores: desktop performance indicator tracker"
+description: "A Python desktop app for registering indicators, recording monthly values, generating Pearson correlation matrices, and comparing results against benchmarks."
 ---
 
-## Setting up
+Matriz de Indicadores is a desktop application built with Python and Flet that lets you define performance indicators, collect monthly numeric data, generate Pearson correlation matrices, and compare indicators against benchmark reference values — all with a clean graphical interface and local JSON persistence.
 
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Set up your virtual environment and install all dependencies to run the app.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get up and running in minutes: clone, install, and launch the app.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="User Guide" icon="book-open" href="/guide/months">
+    Step-by-step instructions for managing months, indicators, and data.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Correlation Matrix" icon="grid" href="/guide/correlation-matrix">
+    Learn how to generate and interpret the Pearson correlation matrix.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What you can do
 
-Everything you need to create world-class documentation.
+<CardGroup cols={2}>
+  <Card title="Manage time periods" icon="calendar" href="/guide/months">
+    Register and organize the months used as columns in your data tables.
+  </Card>
+  <Card title="Define indicators" icon="tag" href="/guide/indicators">
+    Create performance indicators with codes and descriptive names.
+  </Card>
+  <Card title="Enter monthly data" icon="pencil" href="/guide/data-entry">
+    Input numeric values for each indicator across every registered month.
+  </Card>
+  <Card title="Benchmarking" icon="arrows-left-right" href="/guide/benchmarking">
+    Compare indicator averages against reference values and see compliance metrics.
+  </Card>
+</CardGroup>
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+## How it works
 
-## Make your content agent ready
+<Steps>
+  <Step title="Register your months">
+    Add the time periods (e.g., January, February) that structure your data collection.
+  </Step>
+  <Step title="Define your indicators">
+    Create indicators with a short code (e.g., `IND001`) and a descriptive name.
+  </Step>
+  <Step title="Enter numeric values">
+    For each indicator, fill in the numeric value for every registered month.
+  </Step>
+  <Step title="Generate the correlation matrix">
+    Click **Matriz de correlación** to compute Pearson correlation coefficients between all indicator pairs.
+  </Step>
+  <Step title="Benchmark your results">
+    Add benchmark reference values to see gaps, compliance percentages, and pass/fail status per indicator.
+  </Step>
+</Steps>
 
-Make your docs work for humans and AI agents alike.
-
-<Columns cols={2}>
-  <Card
-    title="Prompt component"
-    icon="robot"
-    href="/agent-ready/prompt"
-  >
-    Embed shareable AI prompts readers can copy or open in Cursor.
-  </Card>
-  <Card
-    title="Visibility"
-    icon="eye"
-    href="/agent-ready/visibility"
-  >
-    Show different content to humans and agents reading your docs.
-  </Card>
-  <Card
-    title="Contextual menu"
-    icon="bolt"
-    href="/agent-ready/contextual"
-  >
-    Give readers one-click access to Claude, ChatGPT, Cursor, and more.
-  </Card>
-  <Card
-    title="AI coding tools"
-    icon="wand-magic-sparkles"
-    href="/ai-tools/claude-code"
-  >
-    Set up Claude Code, Cursor, or Windsurf with Mintlify's skill.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<Note>
+  All data is stored locally in a `datos.json` file in the project directory. No internet connection or external database is required.
+</Note>

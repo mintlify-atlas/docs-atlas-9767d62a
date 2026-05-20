@@ -1,0 +1,43 @@
+---
+title: "What is Matriz de Indicadores and how the app works"
+description: "Overview of Matriz de Indicadores: a Flet-based Python desktop app covering indicator management, monthly data entry, correlation analysis, and benchmarking."
+---
+
+**Matriz de Indicadores** is a Python desktop application that helps you register performance indicators, record monthly values, and analyze relationships between them through a correlation matrix and benchmarking views — all from a clean, local interface built with [Flet](https://flet.dev).
+
+<CardGroup cols={2}>
+  <Card title="Month management" icon="calendar">
+    Define and manage the months for which you want to track indicator data. All views stay synchronized with your month list automatically.
+  </Card>
+  <Card title="Indicator registration" icon="tag">
+    Create, edit, and delete performance indicators. Each indicator has a short code and a descriptive name, and is tracked across all configured months.
+  </Card>
+  <Card title="Data entry" icon="pencil">
+    Enter numeric values for each indicator and month combination in a structured table, with inline editing and instant save.
+  </Card>
+  <Card title="Correlation matrix" icon="table-cells">
+    Generate a Pearson correlation matrix across all indicators to identify relationships and patterns in your data at a glance.
+  </Card>
+  <Card title="Benchmarking" icon="arrows-left-right">
+    Compare indicator performance against benchmark targets, tracking gaps and progress over time.
+  </Card>
+</CardGroup>
+
+## How data is stored
+
+All application data — months, indicators, and recorded values — is persisted locally in a file called `datos.json` in the project directory. No database or internet connection is required. The file is read on startup and written automatically whenever you save changes inside the app.
+
+## Built with Python and Flet
+
+The app is written in Python and uses [Flet](https://flet.dev) as its desktop GUI framework. Flet lets you build native-looking desktop applications using Flutter under the hood, without writing any Dart or frontend code. The entry point is `main.py`, which calls `ft.run(main)` to launch the Flet window.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Set up your virtual environment and install dependencies to run the app locally.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Launch the app and explore all five views in under five minutes.
+  </Card>
+</CardGroup>

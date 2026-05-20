@@ -1,0 +1,92 @@
+---
+title: 'Benchmark indicators: compare averages to reference values'
+description: 'Learn how to compare indicator averages against target values, interpret gap and compliance metrics, and manage benchmark records.'
+---
+
+The **Benchmarking** view lets you compare each indicator's historical average against a reference value — such as an institutional target, an industry standard, or a regulatory threshold. For every benchmark you define, the application automatically calculates the gap, compliance percentage, and overall status.
+
+<Note>
+You must register at least one indicator in **Indicadores** before adding benchmarks. If no indicators exist, the **Benchmarking** view displays a message directing you to that step first.
+</Note>
+
+## Adding a benchmark
+
+<Steps>
+  <Step title="Open the Benchmarking view">
+    Navigate to the **Benchmarking** section from the main navigation.
+  </Step>
+  <Step title="Select an indicator">
+    Use the **Indicador** dropdown to choose the indicator you want to benchmark. The dropdown shows each indicator's code and name.
+  </Step>
+  <Step title="Enter the reference value">
+    Type the target or reference number in the **Valor benchmark** field (for example, `90`). Both period and comma are accepted as decimal separators.
+  </Step>
+  <Step title="Select a criterion">
+    Choose a comparison direction from the **Criterio** dropdown:
+
+    - **Mayor es mejor** — the indicator should be as high as possible (for example, availability percentage).
+    - **Menor es mejor** — the indicator should be as low as possible (for example, average response time).
+  </Step>
+  <Step title="Optionally add source and description">
+    Fill in the **Fuente o referencia** field to note where the target comes from (for example, `meta institucional` or `estándar sectorial`). Use the **Descripción** field for any additional context.
+  </Step>
+  <Step title="Click Agregar">
+    Click **Agregar** to save the benchmark. It appears immediately in the comparison table below.
+  </Step>
+</Steps>
+
+<Tip>
+Use **Mayor es mejor** for metrics like uptime, satisfaction scores, or throughput. Use **Menor es mejor** for metrics like error rates, resolution times, or cost per unit.
+</Tip>
+
+## Comparison table
+
+The table below the form shows all registered benchmarks with the following columns:
+
+| Column | Description |
+|--------|-------------|
+| `ID` | Auto-assigned identifier for the benchmark record |
+| `Código` | The indicator's code |
+| `Indicador` | The indicator's name |
+| `Promedio` | The arithmetic mean of all non-null values for the indicator |
+| `Benchmark` | The reference value you entered |
+| `Brecha` | The gap between the average and the reference (see formulas below) |
+| `Cumplimiento (%)` | How closely the average meets the reference, expressed as a percentage |
+| `Criterio` | The comparison direction: **Mayor es mejor** or **Menor es mejor** |
+| `Estado` | **Cumple** if the indicator meets the target, **Por debajo** if it does not, or **Sin datos** if the indicator has no numeric values |
+
+### Brecha and Cumplimiento formulas
+
+The gap and compliance values depend on the criterion:
+
+**Mayor es mejor**
+```text
+Brecha        = promedio − referencia
+Cumplimiento  = (promedio / referencia) × 100
+```
+
+**Menor es mejor**
+```text
+Brecha        = referencia − promedio
+Cumplimiento  = (referencia / promedio) × 100
+```
+
+A positive **Brecha** means the indicator is on the favorable side of the reference. A **Cumplimiento** above 100% indicates the indicator exceeds the target.
+
+## Editing a benchmark
+
+<Steps>
+  <Step title="Click the pencil icon">
+    In the comparison table, click the pencil icon in the **Acción** column for the record you want to update. The form pre-fills with the current values and the button changes to **Actualizar**.
+  </Step>
+  <Step title="Make your changes">
+    Update any field — indicator, reference value, criterion, source, or description.
+  </Step>
+  <Step title="Save or cancel">
+    Click **Actualizar** to save, or click **Cancelar** to discard the changes.
+  </Step>
+</Steps>
+
+## Deleting a benchmark
+
+To remove a benchmark, click the trash icon in the **Acción** column of the row you want to delete. The record is permanently removed from the table.

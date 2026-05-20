@@ -1,0 +1,265 @@
+---
+title: "Data storage: functions and datos.json schema reference"
+description: "Reference for all data persistence functions in data_store.py and the JSON schema used by datos.json, including field definitions and a real data example."
+---
+
+All application data is persisted locally in a single file called `datos.json`. The application reads this file on startup, normalizes its contents, and writes back to it on every change. There is no database or remote storage — `datos.json` is the single source of truth.
+
+## JSON schema
+
+The top-level object has four keys.
+
+<ResponseField name="meses" type="string[]" required>
+  Ordered list of month names (e.g. `"Enero"`, `"Febrero"`). All indicators share this same list of months. Adding or removing a month via the UI triggers `sincronizar_meses_en_indicadores` to keep indicator value maps in sync.
+</ResponseField>
+
+<ResponseField name="indicadores" type="object" required>
+  Map of indicator code strings to indicator objects. Each key is a short code such as `"IND001"`.
+
+  <Expandable title="Indicator object properties">
+    <ResponseField name="nombre" type="string" required>
+      Human-readable name of the indicator.
+    </ResponseField>
+    <ResponseField name="valores" type="object" required>
+      Map of month name to numeric value (or `null` when no data has been entered for that month).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="simulaciones" type="object[]" required>
+  List of PDCA simulation records associated with indicators.
+
+  <Expandable title="Simulation object properties">
+    <ResponseField name="id" type="number" required>
+      Auto-incremented integer identifier.
+    </ResponseField>
+    <ResponseField name="indicador_codigo" type="string" required>
+      Code of the indicator this simulation targets.
+    </ResponseField>
+    <ResponseField name="oportunidad" type="string">
+      Identified opportunity or problem statement (Plan phase).
+    </ResponseField>
+    <ResponseField name="plan" type="string">
+      Planned actions (Plan phase).
+    </ResponseField>
+    <ResponseField name="do" type="string">
+      Executed actions (Do phase).
+    </ResponseField>
+    <ResponseField name="check" type="string">
+      Evaluation criteria (Check phase).
+    </ResponseField>
+    <ResponseField name="act" type="string">
+      Standardization or adjustment decision (Act phase).
+    </ResponseField>
+    <ResponseField name="estado" type="string" default="Pendiente">
+      Current status of the simulation cycle.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="benchmarks" type="object[]" required>
+  List of benchmark records that compare indicator averages against reference values.
+
+  <Expandable title="Benchmark object properties">
+    <ResponseField name="id" type="number" required>
+      Auto-incremented integer identifier.
+    </ResponseField>
+    <ResponseField name="indicador_codigo" type="string" required>
+      Code of the indicator being benchmarked.
+    </ResponseField>
+    <ResponseField name="valor_referencia" type="number | null" required>
+      The target or reference value to compare against.
+    </ResponseField>
+    <ResponseField name="fuente" type="string">
+      Source or origin of the reference value (e.g. institutional standard).
+    </ResponseField>
+    <ResponseField name="descripcion" type="string">
+      Free-text description of this benchmark.
+    </ResponseField>
+    <ResponseField name="criterio" type="string" default="Mayor es mejor">
+      Evaluation direction: `"Mayor es mejor"` or `"Menor es mejor"`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Real data example
+
+The following is the actual contents of `datos.json` from the repository:
+
+```json
+{
+  "meses": [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "junio"
+  ],
+  "indicadores": {
+    "IND003": {
+      "nombre": "Porcentaje de incidentes de interoperabilidad resueltos dentro del tiempo establecido",
+      "valores": {
+        "Enero": 70.0,
+        "Febrero": 55.0,
+        "Marzo": 68.0,
+        "Abril": 70.0,
+        "Mayo": 78.0,
+        "junio": 100.0
+      }
+    },
+    "IND001": {
+      "nombre": "Porcentaje de servicios interoperables validados mediante pruebas",
+      "valores": {
+        "Enero": 85.0,
+        "Febrero": 45.0,
+        "Marzo": 50.0,
+        "Abril": 65.0,
+        "Mayo": 80.0,
+        "junio": 60.0
+      }
+    },
+    "IND002": {
+      "nombre": "Porcentaje de disponibilidad de los servicios de interoperabilidad",
+      "valores": {
+        "Enero": 90.0,
+        "Febrero": 85.0,
+        "Marzo": 60.0,
+        "Abril": 70.0,
+        "Mayo": 82.0,
+        "junio": 85.0
+      }
+    }
+  },
+  "simulaciones": [
+    {
+      "id": 1,
+      "indicador_codigo": "IND003",
+      "oportunidad": "La disponibilidad del servicio presenta variaciones entre meses y puede mejorar con monitoreo preventivo.",
+      "plan": "Implementar alertas tempranas y revisar semanalmente los servicios con menor disponibilidad.",
+      "do": "Se configuraron alertas para caidas del servicio y se asigno un responsable de seguimiento semanal.",
+      "check": "Se compararan los valores de disponibilidad antes y despues de aplicar las alertas preventivas.",
+      "act": "Si la disponibilidad mejora, se estandarizara el monitoreo preventivo para todos los servicios.",
+      "estado": "En proceso"
+    }
+  ],
+  "benchmarks": [
+    {
+      "id": 1,
+      "indicador_codigo": "IND003",
+      "valor_referencia": 90.0,
+      "fuente": "institucinal",
+      "descripcion": "datos",
+      "criterio": "Mayor es mejor"
+    }
+  ]
+}
+```
+
+## Functions
+
+### `cargar_datos`
+
+```python
+def cargar_datos() -> dict
+```
+
+Loads `datos.json` from disk and returns a fully normalized data dictionary. If the file does not exist, returns an empty structure with all four top-level keys initialized to their zero values. After loading, calls `normalizar_indicadores`, `normalizar_simulaciones`, and `normalizar_benchmarks` to ensure every record has the expected shape.
+
+---
+
+### `guardar_datos`
+
+```python
+def guardar_datos(datos: dict) -> None
+```
+
+Serializes the data dictionary to `datos.json` using UTF-8 encoding with a 2-space indent. Overwrites the file on every call.
+
+<ParamField path="datos" type="dict" required>
+  The full application data dictionary to persist.
+</ParamField>
+
+---
+
+### `sincronizar_meses_en_indicadores`
+
+```python
+def sincronizar_meses_en_indicadores(datos: dict) -> None
+```
+
+Keeps every indicator's `valores` map in sync with the global `meses` list. For each indicator it adds any month in `meses` that is missing from `valores` (defaulting to `null`), and removes any month in `valores` that is no longer in `meses`. Modifies `datos` in place.
+
+<ParamField path="datos" type="dict" required>
+  The full application data dictionary. Modified in place.
+</ParamField>
+
+---
+
+### `normalizar_numero`
+
+```python
+def normalizar_numero(valor: str) -> float
+```
+
+Converts a string number to a `float`, accepting either a comma or a period as the decimal separator. Raises `ValueError` if `valor` cannot be parsed after replacement.
+
+<ParamField path="valor" type="str" required>
+  Numeric string, optionally using `","` as the decimal separator (e.g. `"3,14"` or `"3.14"`).
+</ParamField>
+
+---
+
+### `normalizar_indicadores`
+
+```python
+def normalizar_indicadores(indicadores: dict) -> dict
+```
+
+Accepts a raw indicator map loaded from disk and returns a clean copy where every entry has the canonical shape `{"nombre": str, "valores": dict}`. Entries that already have `nombre` and `valores` keys are passed through with whitespace stripped. Entries in legacy formats (where the key is the name rather than a code) are converted and assigned an auto-generated code such as `IND001`.
+
+<ParamField path="indicadores" type="dict" required>
+  Raw indicator map from `datos.json`. May be in legacy or canonical format.
+</ParamField>
+
+---
+
+### `normalizar_simulaciones`
+
+```python
+def normalizar_simulaciones(simulaciones: list) -> list
+```
+
+Accepts a raw list of simulation records and returns a new list where every entry is a dict with all expected PDCA keys present. Missing keys default to empty strings or `"Pendiente"` for `estado`. Non-dict entries are skipped.
+
+<ParamField path="simulaciones" type="list" required>
+  Raw list of simulation records from `datos.json`.
+</ParamField>
+
+---
+
+### `normalizar_benchmarks`
+
+```python
+def normalizar_benchmarks(benchmarks: list) -> list
+```
+
+Accepts a raw list of benchmark records and returns a new list where every entry has all expected keys. Missing `valor_referencia` defaults to `null`; missing `criterio` defaults to `"Mayor es mejor"`. Non-dict entries are skipped.
+
+<ParamField path="benchmarks" type="list" required>
+  Raw list of benchmark records from `datos.json`.
+</ParamField>
+
+---
+
+### `siguiente_id_benchmark`
+
+```python
+def siguiente_id_benchmark(datos: dict) -> int
+```
+
+Returns the next available integer ID for a new benchmark record by finding the maximum existing `id` across all benchmarks and adding 1. Returns `1` when there are no existing benchmarks.
+
+<ParamField path="datos" type="dict" required>
+  The full application data dictionary.
+</ParamField>

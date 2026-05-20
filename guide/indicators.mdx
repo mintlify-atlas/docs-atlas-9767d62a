@@ -1,0 +1,57 @@
+---
+title: 'Create, edit, and manage your performance indicators'
+description: 'Learn how to add, edit, and delete indicators in Matriz de Indicadores, including code and name requirements and validation rules for each field.'
+---
+
+Indicators are the performance metrics you want to track and analyze. Each indicator has a short **code** used to identify it throughout the application (for example, `IND001`) and a descriptive **name** (for example, `Disponibilidad del servicio`). The code appears as a row label in the data table and as the axis label in the correlation matrix.
+
+## Adding an indicator
+
+<Steps>
+  <Step title="Open the Indicadores view">
+    Navigate to the **Indicadores** section from the main navigation.
+  </Step>
+  <Step title="Enter the code">
+    Type a unique identifier in the **Código** field. Codes are case-sensitive and cannot be reused. Common conventions use a prefix followed by a zero-padded number, such as `IND001` or `SERV02`.
+  </Step>
+  <Step title="Enter the name">
+    Type a descriptive label in the **Nombre del indicador** field. For example: `Disponibilidad del servicio` or `Tiempo de respuesta promedio`.
+  </Step>
+  <Step title="Click Agregar">
+    Click **Agregar** to save the indicator. It appears immediately in the table below.
+  </Step>
+</Steps>
+
+<Note>
+Both the **Código** and **Nombre del indicador** fields are required. If either is empty, a red message prompts you to fill in both fields. If the code already exists, an orange warning notifies you of the duplicate.
+</Note>
+
+## Editing an indicator
+
+<Steps>
+  <Step title="Click the pencil icon">
+    In the indicator table, click the pencil icon in the **Acción** column for the row you want to change. The form above the table pre-fills with the indicator's current code and name, and the button changes to **Actualizar**.
+  </Step>
+  <Step title="Make your changes">
+    Update the **Código**, the **Nombre del indicador**, or both.
+  </Step>
+  <Step title="Save or cancel">
+    Click **Actualizar** to save the changes, or click **Cancelar** to discard them and return the form to its default state.
+  </Step>
+</Steps>
+
+## Deleting an indicator
+
+To remove an indicator, click the trash icon in the **Acción** column of the row you want to delete. The indicator and all its recorded data values are permanently removed.
+
+## Indicator table
+
+Registered indicators appear in a table with the following columns:
+
+| Column | Description |
+|--------|-------------|
+| `#` | Row number, assigned in registration order |
+| `Código` | The unique identifier for the indicator |
+| `Nombre` | The full descriptive name |
+| `Meses` | The number of months currently associated with this indicator |
+| `Acción` | Edit and delete controls |

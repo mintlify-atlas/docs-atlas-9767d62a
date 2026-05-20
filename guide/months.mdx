@@ -1,0 +1,45 @@
+---
+title: 'Manage months: add, view, and delete time periods in the app'
+description: 'Learn how to register, review, and remove months in Matriz de Indicadores. Months define the data columns shared by every performance indicator in the app.'
+---
+
+Months are the time periods that form the columns of every indicator's data table. Before you can enter any numeric values, you must register at least one month. All indicators share the same list of months, so any month you add becomes available across the entire application.
+
+## Adding a month
+
+<Steps>
+  <Step title="Open the Meses view">
+    Navigate to the **Meses** section from the main navigation.
+  </Step>
+  <Step title="Type the month name">
+    Enter the name of the period in the **Nombre del mes** field. For example, type `Enero`, `Febrero`, or any label that suits your reporting cycle.
+  </Step>
+  <Step title="Click Agregar">
+    Click **Agregar** to save the month. A confirmation message appears and the month immediately shows up in the table below.
+  </Step>
+</Steps>
+
+### Validation rules
+
+The application enforces two rules when you add a month:
+
+- **Empty names are rejected.** If you click **Agregar** with no text in the field, a red error message asks you to write the month name.
+- **Duplicate names are rejected.** If the name you entered already exists in the list, an orange warning informs you that the month is already registered. Choose a different name or check the existing table.
+
+## Month table
+
+Registered months appear in a table with the following columns:
+
+| Column | Description |
+|--------|-------------|
+| `#` | Row number, assigned in registration order |
+| `Mes` | The month name you entered |
+| `Acción` | Action controls for the row |
+
+## Deleting a month
+
+To remove a month, click the trash icon in the **Acción** column of the row you want to delete. The month is removed immediately and the table refreshes.
+
+<Warning>
+Deleting a month removes its data column from **every indicator** in the application. All numeric values recorded for that month across all indicators are permanently lost. This action cannot be undone.
+</Warning>

@@ -1,0 +1,191 @@
+---
+title: "Benchmarking module: calculation functions reference"
+description: "Source-level reference for calcular_promedio, calcular_brecha, calcular_cumplimiento, calcular_estado, and formatear_numero with criteria logic and edge cases."
+---
+
+The benchmarking module compares each indicator's historical average against a user-defined reference value. Every benchmark record specifies a **criterio** that controls the direction of the comparison — either `"Mayor es mejor"` (higher is better) or `"Menor es mejor"` (lower is better). This affects how the gap, compliance rate, and pass/fail status are calculated.
+
+All calculation functions below live in `benchmarking_view.py`.
+
+## Criteria logic
+
+<AccordionGroup>
+  <Accordion title="Mayor es mejor — higher is better">
+    Use this criterion when a higher indicator value is the goal (e.g. service availability percentage, resolution rate).
+
+    | Calculation | Formula |
+    |---|---|
+    | Brecha | `promedio − referencia` |
+    | Cumplimiento | `(promedio / referencia) × 100` |
+    | Estado: Cumple | `promedio >= referencia` |
+    | Estado: Por debajo | `promedio < referencia` |
+
+    A positive brecha means the indicator is above target.
+  </Accordion>
+  <Accordion title="Menor es mejor — lower is better">
+    Use this criterion when a lower indicator value is the goal (e.g. response time, error rate, cost).
+
+    | Calculation | Formula |
+    |---|---|
+    | Brecha | `referencia − promedio` |
+    | Cumplimiento | `(referencia / promedio) × 100` |
+    | Estado: Cumple | `promedio <= referencia` |
+    | Estado: Por debajo | `promedio > referencia` |
+
+    A positive brecha means the indicator is below the reference (which is favorable).
+  </Accordion>
+</AccordionGroup>
+
+## Functions
+
+### `calcular_promedio`
+
+```python
+def calcular_promedio(valores) -> float | None
+```
+
+Computes the arithmetic mean of all numeric values in `valores`, ignoring `null` entries. Returns `None` if there are no numeric values at all.
+
+```python
+def calcular_promedio(valores):
+    numeros = [valor for valor in valores if isinstance(valor, (int, float))]
+    if not numeros:
+        return None
+    return sum(numeros) / len(numeros)
+```
+
+<ParamField path="valores" type="iterable" required>
+  The values from an indicator's `valores` dict (e.g. `indicador["valores"].values()`). May contain `null` entries for months with no data.
+</ParamField>
+
+---
+
+### `calcular_brecha`
+
+```python
+def calcular_brecha(promedio, referencia, criterio) -> float | None
+```
+
+Computes the gap between the indicator's average and the benchmark reference. Returns `None` if either `promedio` or `referencia` is `None`.
+
+```python
+def calcular_brecha(promedio, referencia, criterio):
+    if promedio is None or referencia is None:
+        return None
+    if criterio == "Menor es mejor":
+        return referencia - promedio
+    return promedio - referencia
+```
+
+<ParamField path="promedio" type="float | None" required>
+  The indicator's computed average, as returned by `calcular_promedio`.
+</ParamField>
+
+<ParamField path="referencia" type="float | None" required>
+  The benchmark's `valor_referencia`.
+</ParamField>
+
+<ParamField path="criterio" type="str" required>
+  `"Mayor es mejor"` or `"Menor es mejor"`.
+</ParamField>
+
+---
+
+### `calcular_cumplimiento`
+
+```python
+def calcular_cumplimiento(promedio, referencia, criterio) -> float | None
+```
+
+Computes a compliance percentage showing how close the indicator's average is to the reference. Returns `None` when:
+
+- `promedio` is `None`
+- `referencia` is `None` or `0` (avoids division by zero)
+- `criterio` is `"Menor es mejor"` and `promedio` is `0` (avoids division by zero)
+
+The result is rendered in the UI as `"{value:.2f}%"`.
+
+```python
+def calcular_cumplimiento(promedio, referencia, criterio):
+    if promedio is None or referencia in (None, 0):
+        return None
+    if criterio == "Menor es mejor":
+        if promedio == 0:
+            return None
+        return (referencia / promedio) * 100
+    return (promedio / referencia) * 100
+```
+
+<ParamField path="promedio" type="float | None" required>
+  The indicator's computed average.
+</ParamField>
+
+<ParamField path="referencia" type="float | None" required>
+  The benchmark's `valor_referencia`.
+</ParamField>
+
+<ParamField path="criterio" type="str" required>
+  `"Mayor es mejor"` or `"Menor es mejor"`.
+</ParamField>
+
+---
+
+### `calcular_estado`
+
+```python
+def calcular_estado(promedio, referencia, criterio) -> str
+```
+
+Returns a string status label for the benchmark comparison. Possible return values are `"Cumple"`, `"Por debajo"`, and `"Sin datos"`.
+
+```python
+def calcular_estado(promedio, referencia, criterio):
+    if promedio is None or referencia is None:
+        return "Sin datos"
+    if criterio == "Menor es mejor":
+        return "Cumple" if promedio <= referencia else "Por debajo"
+    return "Cumple" if promedio >= referencia else "Por debajo"
+```
+
+<ParamField path="promedio" type="float | None" required>
+  The indicator's computed average. If `None`, returns `"Sin datos"`.
+</ParamField>
+
+<ParamField path="referencia" type="float | None" required>
+  The benchmark's `valor_referencia`. If `None`, returns `"Sin datos"`.
+</ParamField>
+
+<ParamField path="criterio" type="str" required>
+  `"Mayor es mejor"` or `"Menor es mejor"`.
+</ParamField>
+
+| Return value | Meaning |
+|---|---|
+| `"Cumple"` | The indicator meets or exceeds the benchmark for the given criterion. |
+| `"Por debajo"` | The indicator does not meet the benchmark. |
+| `"Sin datos"` | Either `promedio` or `referencia` is `None`; no comparison is possible. |
+
+---
+
+### `formatear_numero`
+
+```python
+def formatear_numero(valor) -> str
+```
+
+Formats a numeric value for display. Returns `"-"` when `valor` is `None`, and a two-decimal string (e.g. `"78.50"`) otherwise. This function is used for all numeric cells in the benchmarking table — promedio, referencia, and brecha — so that missing values appear consistently as `"-"`.
+
+```python
+def formatear_numero(valor):
+    if valor is None:
+        return "-"
+    return f"{valor:.2f}"
+```
+
+<ParamField path="valor" type="float | None" required>
+  The numeric value to format. Pass `None` to get `"-"`.
+</ParamField>
+
+<Note>
+  Cumplimiento uses a separate inline format in `crear_tabla_benchmarks` — `f"{cumplimiento:.2f}%"` — to append the percent sign. It still falls back to `"-"` when `cumplimiento` is `None`.
+</Note>

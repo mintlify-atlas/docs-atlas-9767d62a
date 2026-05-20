@@ -1,0 +1,128 @@
+---
+title: "Pearson correlation algorithm and implementation details"
+description: "calcular_correlacion step-by-step: collecting valid pairs, computing means and deviations, handling zero-variance edge cases, and rendering results in the UI."
+---
+
+The correlation matrix uses the **Pearson correlation coefficient** to measure the linear relationship between any two indicators. The result is a value in the range −1 to 1, where 1 means a perfect positive relationship, −1 means a perfect inverse relationship, and 0 means no linear relationship.
+
+The function that computes this is `calcular_correlacion` in `data_store.py`.
+
+## Function signature
+
+```python
+def calcular_correlacion(datos: dict, codigo_a: str, codigo_b: str) -> float | None
+```
+
+<ParamField path="datos" type="dict" required>
+  The full application data dictionary, as returned by `cargar_datos`. Must contain `"meses"` and `"indicadores"`.
+</ParamField>
+
+<ParamField path="codigo_a" type="str" required>
+  The indicator code for the first series (row in the matrix).
+</ParamField>
+
+<ParamField path="codigo_b" type="str" required>
+  The indicator code for the second series (column in the matrix).
+</ParamField>
+
+Returns a `float` in the range −1 to 1, or `None` when the correlation cannot be computed (see edge cases below). The UI displays `None` as `"-"`.
+
+## Algorithm
+
+The function follows these steps:
+
+<Steps>
+  <Step title="Collect shared valid pairs">
+    For each month in `datos["meses"]`, the function checks whether both indicators have a numeric value (not `null`). Only months where **both** values are integers or floats are included. This list of `(value_a, value_b)` tuples is called `pares`.
+  </Step>
+  <Step title="Require at least two pairs">
+    If `pares` has fewer than 2 elements, the function returns `None`. You need at least two data points to compute a meaningful correlation.
+  </Step>
+  <Step title="Compute the means">
+    The arithmetic mean is computed separately for each series:
+
+    - `promedio_a = sum(lista_a) / len(lista_a)`
+    - `promedio_b = sum(lista_b) / len(lista_b)`
+  </Step>
+  <Step title="Compute the numerator">
+    The numerator is the sum of the products of deviations from the mean:
+
+    `numerador = Σ (a − promedio_a) × (b − promedio_b)`
+  </Step>
+  <Step title="Compute the denominator">
+    The denominator is the square root of the product of the total squared deviations for each series:
+
+    `denominador = √( Σ(a − promedio_a)² × Σ(b − promedio_b)² )`
+  </Step>
+  <Step title="Guard against zero denominator">
+    If `denominador` equals 0 — which occurs when one or both series have no variance (all values are identical) — the function returns `None` to avoid a division-by-zero error.
+  </Step>
+  <Step title="Return the coefficient">
+    Returns `numerador / denominador`, a float in the range −1 to 1.
+  </Step>
+</Steps>
+
+## Source code
+
+```python
+def calcular_correlacion(datos, codigo_a, codigo_b):
+    valores_a = datos["indicadores"][codigo_a]["valores"]
+    valores_b = datos["indicadores"][codigo_b]["valores"]
+    pares = []
+
+    for mes in datos["meses"]:
+        valor_a = valores_a.get(mes)
+        valor_b = valores_b.get(mes)
+        if isinstance(valor_a, (int, float)) and isinstance(valor_b, (int, float)):
+            pares.append((valor_a, valor_b))
+
+    if len(pares) < 2:
+        return None
+
+    lista_a = [par[0] for par in pares]
+    lista_b = [par[1] for par in pares]
+    promedio_a = sum(lista_a) / len(lista_a)
+    promedio_b = sum(lista_b) / len(lista_b)
+    numerador = sum(
+        (valor_a - promedio_a) * (valor_b - promedio_b)
+        for valor_a, valor_b in pares
+    )
+    suma_a = sum((valor_a - promedio_a) ** 2 for valor_a in lista_a)
+    suma_b = sum((valor_b - promedio_b) ** 2 for valor_b in lista_b)
+    denominador = math.sqrt(suma_a * suma_b)
+
+    if denominador == 0:
+        return None
+    return numerador / denominador
+```
+
+## When `None` is returned
+
+The function returns `None` in two cases:
+
+- **Fewer than 2 shared months with data** — there is not enough overlap between the two indicators to compute a statistically meaningful result.
+- **Zero denominator** — at least one of the indicators has the same value in every recorded month, giving it zero variance. A correlation with a constant series is undefined.
+
+In `views.py`, the `crear_tabla_correlacion` function renders `None` as `"-"` in the matrix cell:
+
+```python
+correlacion = calcular_correlacion(datos, codigo_fila, codigo_columna)
+texto = "-" if correlacion is None else f"{correlacion:.2f}"
+```
+
+## Interpreting the result
+
+| Range | Interpretation |
+|---|---|
+| `0.90` to `1.00` | Very strong positive correlation |
+| `0.70` to `0.89` | Strong positive correlation |
+| `0.40` to `0.69` | Moderate positive correlation |
+| `0.00` to `0.39` | Weak or no positive correlation |
+| `−0.39` to `0.00` | Weak or no negative correlation |
+| `−0.69` to `−0.40` | Moderate negative correlation |
+| `−0.89` to `−0.70` | Strong negative correlation |
+| `−1.00` to `−0.90` | Very strong negative correlation |
+
+<Note>
+  The diagonal of the matrix (an indicator correlated with itself) always returns `1.00` because the shared pairs are identical and the deviations move in perfect lockstep.
+</Note>

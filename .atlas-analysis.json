@@ -1,0 +1,59 @@
+{
+  "projectType": "general",
+  "projectName": "Matriz de Indicadores",
+  "projectDescription": "A desktop application built with Flet (Python) for registering performance indicators, entering monthly data, computing correlation matrices, and performing benchmarking analysis.",
+  "theme": "palm",
+  "primaryColor": "#1565C0",
+  "lightColor": "#E3F2FD",
+  "darkColor": "#0D47A1",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": ["introduction", "installation", "quickstart"]
+      },
+      {
+        "group": "User Guide",
+        "pages": [
+          "guide/months",
+          "guide/indicators",
+          "guide/data-entry",
+          "guide/correlation-matrix",
+          "guide/benchmarking"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "reference/data-storage",
+          "reference/correlation-algorithm",
+          "reference/benchmarking-logic"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Register and manage time periods (months) for data collection",
+    "Define performance indicators with codes and names",
+    "Enter numeric values per indicator per month",
+    "Generate Pearson correlation matrices between all indicators",
+    "Benchmarking: compare indicator averages against reference values with gap and compliance metrics",
+    "Persistent JSON-based local data storage",
+    "Desktop GUI built with Flet (Python)"
+  ],
+  "publicApiSurface": [
+    "cargar_datos() -> dict",
+    "guardar_datos(datos: dict) -> None",
+    "sincronizar_meses_en_indicadores(datos: dict) -> None",
+    "calcular_correlacion(datos, codigo_a, codigo_b) -> float | None",
+    "normalizar_numero(valor: str) -> float",
+    "normalizar_indicadores(indicadores: dict) -> dict",
+    "normalizar_simulaciones(simulaciones: list) -> list",
+    "normalizar_benchmarks(benchmarks: list) -> list",
+    "siguiente_id_benchmark(datos: dict) -> int",
+    "calcular_promedio(valores) -> float | None",
+    "calcular_brecha(promedio, referencia, criterio) -> float | None",
+    "calcular_cumplimiento(promedio, referencia, criterio) -> float | None",
+    "calcular_estado(promedio, referencia, criterio) -> str"
+  ]
+}
